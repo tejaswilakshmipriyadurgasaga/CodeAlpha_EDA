@@ -1,0 +1,104 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv("books_dataset.csv")
+
+print("Dataset loaded successfully!\n")
+
+print("First 5 rows:")
+print(df.head())
+
+print("\nDataset shape:")
+print(df.shape)
+
+print("\nColumn names:")
+print(df.columns.tolist())
+
+print("\nData types:")
+print(df.dtypes)
+
+print("\nDataset information:")
+df.info()
+
+print("\nStatistical summary:")
+print(df.describe())
+
+print("\nMissing values:")
+print(df.isnull().sum())
+
+print("\nDuplicate rows:")
+print(df.duplicated().sum())
+
+print("\nUnique ratings:")
+print(df["Rating"].unique())
+
+rating_map = {
+    "One": 1,
+    "Two": 2,
+    "Three": 3,
+    "Four": 4,
+    "Five": 5
+}
+
+df["Rating_Numeric"] = df["Rating"].map(rating_map)
+
+print("\nAverage book price:")
+print("₹", round(df["Price (INR)"].mean(), 2))
+
+print("\nMinimum book price:")
+print("₹", df["Price (INR)"].min())
+
+print("\nMaximum book price:")
+print("₹", df["Price (INR)"].max())
+
+print("\nTop 10 most expensive books:")
+print(df.nlargest(10, "Price (INR)")[["Title", "Price (INR)"]])
+
+print("\nTop 10 cheapest books:")
+print(df.nsmallest(10, "Price (INR)")[["Title", "Price (INR)"]])
+
+print("\nRating distribution:")
+print(df["Rating"].value_counts())
+
+print("\nAverage rating:")
+print(round(df["Rating_Numeric"].mean(), 2))
+
+print("\nAvailability:")
+print(df["Availability"].value_counts())
+
+correlation = df["Price (INR)"].corr(df["Rating_Numeric"])
+
+print("\nCorrelation between price and rating:")
+print(round(correlation, 2))
+plt.figure(figsize=(8, 5))
+sns.countplot(data=df, x="Rating", order=["One", "Two", "Three", "Four", "Five"], color="skyblue")
+plt.title("Distribution of Book Ratings")
+plt.xlabel("Rating")
+plt.ylabel("Number of Books")
+plt.savefig("rating_distribution.png", dpi=300, bbox_inches="tight")
+plt.show()
+
+plt.figure(figsize=(8, 5))
+sns.histplot(df["Price (INR)"], bins=15, color="pink")
+plt.title("Distribution of Book Prices")
+plt.xlabel("Price (INR)")
+plt.savefig("price_distribution.png", dpi=300, bbox_inches="tight")
+plt.ylabel("Number of Books")
+plt.show()
+
+plt.figure(figsize=(8, 5))
+sns.boxplot(x=df["Price (INR)"], color="blue")
+plt.title("Book Price Distribution and Outliers")
+plt.xlabel("Price (INR)")
+plt.savefig("price_outliers.png", dpi=300, bbox_inches="tight")
+plt.show()
+
+plt.figure(figsize=(8, 5))
+sns.scatterplot(data=df, x="Price (INR)", y="Rating_Numeric", color="purple")
+plt.title("Price vs Rating")
+plt.xlabel("Price (INR)")
+plt.ylabel("Rating")
+plt.savefig("price_vs_rating.png", dpi=300, bbox_inches="tight")
+plt.show()
